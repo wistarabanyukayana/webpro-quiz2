@@ -1,0 +1,16 @@
+/target
+*.class
+*.war
+/node_modules
+/src/main/webapp/assets/app.css
+*.sqlite
+*.db
+/reference
+.env
+.env.backup
+.env.production
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
