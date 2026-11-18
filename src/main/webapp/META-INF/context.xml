@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+    <CookieProcessor sameSiteCookies="lax"/>
+    <!-- trust X-Forwarded-For/Proto from the reverse proxy -->
+    <Valve className="org.apache.catalina.valves.RemoteIpValve" protocolHeader="X-Forwarded-Proto"/>
+</Context>

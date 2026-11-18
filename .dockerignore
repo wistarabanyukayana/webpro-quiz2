@@ -1,0 +1,8 @@
+target
+node_modules
+reference
+data
+.git
+src/main/webapp/assets/app.css
+*.db
+*.sqlite
