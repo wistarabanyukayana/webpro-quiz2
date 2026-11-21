@@ -96,6 +96,24 @@
         });
     });
 
+    // only show categories of the selected type
+    document.querySelectorAll('select[data-type-select]').forEach(function (typeSelect) {
+        var categorySelect = document.getElementById(typeSelect.dataset.typeSelect);
+        function sync() {
+            var type = typeSelect.value;
+            Array.prototype.forEach.call(categorySelect.options, function (option) {
+                var match = !option.dataset.type || !type || option.dataset.type === type;
+                option.hidden = !match;
+                option.disabled = !match;
+                if (!match && option.selected) {
+                    categorySelect.value = '';
+                }
+            });
+        }
+        typeSelect.addEventListener('change', sync);
+        sync();
+    });
+
 })();
 
 // loading text on submit

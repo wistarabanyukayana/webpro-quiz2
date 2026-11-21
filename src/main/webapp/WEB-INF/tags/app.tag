@@ -10,7 +10,7 @@
 <div class="flex h-dvh flex-col overflow-hidden md:flex-row">
     <aside class="flex w-full shrink-0 flex-col gap-4 border-b border-border bg-surface p-3 md:h-dvh md:w-60 md:justify-between md:gap-6 md:border-r md:border-b-0 md:p-4">
         <nav class="flex gap-1 overflow-x-auto md:grid md:gap-1" aria-label="Main">
-            <c:forEach var="link" items="${['/|Dashboard|dashboard', '/categories|Categories|categories']}">
+            <c:forEach var="link" items="${['/|Dashboard|dashboard', '/income|Income|income', '/expense|Expense|expense', '/categories|Categories|categories']}">
                 <c:set var="parts" value="${link.split('[|]')}"/>
                 <a href="${parts[0]}" class="${item} ${currentPath == parts[0] ? active : idle}"${currentPath == parts[0] ? ' aria-current="page"' : ''}>
                     <ui:nav-icon name="${parts[2]}" cls="size-4 shrink-0"/>
