@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AuthenticationTest {
 
-    private static final List<String> PROTECTED = List.of("/");
+    private static final List<String> PROTECTED = List.of("/", "/categories");
 
     private static boolean signedIn(TestApp.Client client) {
         return client.get("/").statusCode() == 200;

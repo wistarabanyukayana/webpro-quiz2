@@ -46,6 +46,56 @@
         });
     });
 
+    // confirm before submit
+    var confirmDialog = document.getElementById('confirm-dialog');
+    var pending = null;
+    document.querySelectorAll('form[data-confirm]').forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (form.dataset.confirmed === '1' || !confirmDialog) {
+                return;
+            }
+            event.preventDefault();
+            pending = form;
+            confirmDialog.querySelector('[data-confirm-message]').textContent = form.dataset.confirm;
+            confirmDialog.showModal();
+        });
+    });
+    if (confirmDialog) {
+        confirmDialog.addEventListener('close', function () {
+            if (confirmDialog.returnValue === 'ok' && pending) {
+                pending.dataset.confirmed = '1';
+                pending.requestSubmit();
+            }
+            pending = null;
+        });
+    }
+
+    // dialogs
+    document.querySelectorAll('[data-dialog-open]').forEach(function (button) {
+        button.addEventListener('click', function (event) {
+            var dialog = document.getElementById(button.dataset.dialogOpen);
+            if (dialog) {
+                event.preventDefault();
+                dialog.showModal();
+            }
+        });
+    });
+    document.querySelectorAll('[data-dialog-close]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            button.closest('dialog').close();
+        });
+    });
+    document.querySelectorAll('dialog[data-open]').forEach(function (dialog) {
+        dialog.showModal();
+        dialog.addEventListener('close', function () {
+            // remove ?new / ?edit so a reload doesn't reopen it
+            var url = new URL(window.location.href);
+            url.searchParams.delete('new');
+            url.searchParams.delete('edit');
+            history.replaceState(null, '', url);
+        });
+    });
+
 })();
 
 // loading text on submit
