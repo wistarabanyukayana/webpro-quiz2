@@ -114,6 +114,21 @@
         sync();
     });
 
+    // data-show-when="selectId:value1,value2"
+    document.querySelectorAll('[data-show-when]').forEach(function (element) {
+        var parts = element.dataset.showWhen.split(':');
+        var select = document.getElementById(parts[0]);
+        var values = parts[1].split(',');
+        function sync() {
+            var show = values.indexOf(select.value) !== -1;
+            element.hidden = !show;
+            element.querySelectorAll('input, select').forEach(function (input) {
+                input.disabled = !show;
+            });
+        }
+        select.addEventListener('change', sync);
+        sync();
+    });
 })();
 
 // loading text on submit
