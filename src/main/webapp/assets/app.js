@@ -17,6 +17,24 @@
         });
     });
 
+    // accent picker
+    function showAccent(input) {
+        document.querySelectorAll('[data-accent-label]').forEach(function (label) {
+            label.textContent = input.dataset.label;
+        });
+    }
+    document.querySelectorAll('input[data-accent-option]').forEach(function (input) {
+        input.checked = (root.dataset.accent || 'green') === input.value;
+        if (input.checked) {
+            showAccent(input);
+        }
+        input.addEventListener('change', function () {
+            root.dataset.accent = input.value;
+            save('accent', input.value);
+            showAccent(input);
+        });
+    });
+
     // show/hide password
     document.querySelectorAll('[data-reveal]').forEach(function (button) {
         var input = document.getElementById(button.dataset.reveal);

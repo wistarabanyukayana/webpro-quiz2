@@ -21,6 +21,10 @@
 
         <div class="flex items-center gap-2 md:grid md:gap-1">
             <div class="flex items-center justify-between gap-2">
+                <a href="/settings" class="${item} flex-1 ${currentPath == '/settings' ? active : idle}"${currentPath == '/settings' ? ' aria-current="page"' : ''}>
+                    <ui:nav-icon name="settings" cls="size-4 shrink-0"/>
+                    Settings
+                </a>
                 <t:theme-toggle/>
             </div>
             <form method="post" action="/logout" class="contents" data-logout>
