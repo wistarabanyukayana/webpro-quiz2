@@ -92,4 +92,11 @@ get /categories; hasnt "Smoke $RUN renamed" "deleted category"; ok "delete categ
 
 send /logout >/dev/null
 get / 302; ok "logout"
+
+# log back in and delete the test account
+get /login
+[[ $(send /login login="$USER" password="$PASS") == / ]] || fail "login by username failed"
+get /settings
+[[ $(send /settings _method=DELETE delete_password="$PASS") == /login ]] || fail "account deletion did not lead to the login page"
+get / 302; ok "delete account"
 echo "smoke test passed against $BASE"

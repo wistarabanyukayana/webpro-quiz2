@@ -151,4 +151,39 @@ class SettingsTest {
         assertEquals("/login", location(new TestApp.Client().cookie("remember", before).get("/")));
         assertEquals(200, new TestApp.Client().cookie("remember", after).get("/").statusCode());
     }
+
+    @Test
+    void accountDeletionNeedsTheCurrentPassword() {
+        String name = unique("del");
+        TestApp.account(name);
+        TestApp.Client client = new TestApp.Client().login(name, TestApp.PASSWORD);
+
+        String missing = client.follow(client.delete("/settings"));
+        assertTrue(missing.contains("The password field is required."));
+        String wrong = client.follow(client.delete("/settings", "delete_password", "not-the-password"));
+        assertTrue(wrong.contains("The password is incorrect."));
+
+        assertTrue(AccountDao.findByUsername(name).isPresent());
+        assertEquals(200, client.get("/").statusCode());
+    }
+
+    @Test
+    void deletingTheAccountSignsOutEverywhereAndFreesTheUsername() {
+        String name = unique("del");
+        TestApp.account(name);
+        TestApp.Client client = new TestApp.Client();
+        client.post("/login", "login", name, "password", TestApp.PASSWORD, "remember", "on");
+        client.get("/settings");
+        String remember = client.cookieValue("remember");
+        TestApp.Client elsewhere = new TestApp.Client().login(name, TestApp.PASSWORD);
+
+        assertEquals("/login", location(client.delete("/settings", "delete_password", TestApp.PASSWORD)));
+
+        assertFalse(AccountDao.findByUsername(name).isPresent());
+        assertEquals("/login", location(client.get("/")));
+        assertEquals("/login", location(elsewhere.get("/")));
+        assertEquals("/login", location(new TestApp.Client().cookie("remember", remember).get("/")));
+        assertEquals(422, new TestApp.Client().post("/login", "login", name, "password", TestApp.PASSWORD).statusCode());
+        TestApp.account(name);
+    }
 }

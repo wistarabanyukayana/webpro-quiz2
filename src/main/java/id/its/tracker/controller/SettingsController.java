@@ -106,4 +106,23 @@ public class SettingsController extends HttpServlet {
         req.getSession().setAttribute(SAVED, "password");
         Web.back(req, res, "/settings", null, null, null);
     }
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse res) throws IOException {
+        if (!Web.path(req).equals("/settings")) {
+            res.sendError(405);
+            return;
+        }
+        Account account = Web.account(req);
+        String password = Web.secret(req, "delete_password");
+        if (password == null || !Passwords.verify(password, account.passwordHash())) {
+            Web.back(req, res, "/settings", Map.of("delete_password", password == null
+                    ? "The password field is required." : "The password is incorrect."), null, null);
+            return;
+        }
+
+        AccountDao.delete(account.id());
+        Auth.logout(req, res);
+        res.sendRedirect("/login");
+    }
 }

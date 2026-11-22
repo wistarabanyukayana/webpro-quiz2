@@ -7,7 +7,7 @@
     <main class="grid w-full flex-1 content-start gap-6 overflow-y-auto p-6 lg:p-8">
         <div class="grid gap-1">
             <h1 class="text-2xl font-semibold tracking-tight text-ink">Settings</h1>
-            <p class="text-sm text-muted">Account details, appearance, and password.</p>
+            <p class="text-sm text-muted">Account details, appearance, password, and account deletion.</p>
         </div>
 
         <form method="post" action="/settings" class="${card}">
@@ -64,6 +64,20 @@
                 <ui:button type="submit" busy="Updating...">Update password</ui:button>
                 <c:if test="${saved == 'password'}"><span class="text-xs text-primary" role="status">Updated</span></c:if>
             </div>
+        </form>
+
+        <form method="post" action="/settings" class="grid gap-4 rounded-xl border border-error/40 bg-surface p-6"
+              data-confirm="Delete your account with all its categories and transactions? This cannot be undone.">
+            <input type="hidden" name="_token" value="${sessionScope.csrf}">
+            <input type="hidden" name="_method" value="DELETE">
+            <div class="grid gap-1">
+                <h2 class="text-sm font-medium text-error">Delete account</h2>
+                <p class="text-xs text-muted">Deletes the account with all its categories and transactions. This cannot be undone.</p>
+            </div>
+            <div class="grid gap-4 sm:grid-cols-2">
+                <ui:text-field name="delete_password" label="Password" type="password" autocomplete="current-password" required="true"/>
+            </div>
+            <ui:button type="submit" variant="danger" busy="Deleting..." cls="w-fit">Delete account</ui:button>
         </form>
     </main>
 </t:app>

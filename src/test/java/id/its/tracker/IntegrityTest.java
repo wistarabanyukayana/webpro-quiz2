@@ -292,4 +292,23 @@ class IntegrityTest {
             assertTrue(page.contains("&lt;b id=x&gt;"), path + " shows the escaped text");
         }
     }
+
+    @Test
+    void deletingAnAccountDeletesItsCategoriesAndTransactionsOnly() {
+        String name = unique("cascade");
+        long accountId = TestApp.account(name);
+        long food = TestApp.category(accountId, "expense", "Food");
+        TestApp.transaction(accountId, food, "expense", 1000, "2026-10-25", null);
+        long otherId = TestApp.account(unique("kept"));
+        long otherFood = TestApp.category(otherId, "expense", "Food");
+        TestApp.transaction(otherId, otherFood, "expense", 2000, "2026-10-25", null);
+
+        TestApp.Client client = new TestApp.Client().login(name, TestApp.PASSWORD);
+        assertEquals("/login", location(client.delete("/settings", "delete_password", TestApp.PASSWORD)));
+
+        assertEquals(0, count("SELECT COUNT(*) FROM categories WHERE accounts_id = ?", accountId));
+        assertEquals(0, count("SELECT COUNT(*) FROM transactions WHERE accounts_id = ?", accountId));
+        assertTrue(count("SELECT COUNT(*) FROM categories WHERE accounts_id = ?", otherId) > 1);
+        assertEquals(1, count("SELECT COUNT(*) FROM transactions WHERE accounts_id = ?", otherId));
+    }
 }

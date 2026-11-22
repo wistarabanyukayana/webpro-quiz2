@@ -66,4 +66,8 @@ public final class AccountDao {
                 WHERE id = ?""", passwordHash, id);
         return find(id).map(Account::sessionVersion).orElseThrow();
     }
+
+    public static void delete(long id) {
+        Database.update("DELETE FROM accounts WHERE id = ?", id);
+    }
 }

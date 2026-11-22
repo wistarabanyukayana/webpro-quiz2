@@ -157,8 +157,10 @@ public final class TestApp {
             return post(path, all.toArray(String[]::new));
         }
 
-        public HttpResponse<String> delete(String path) {
-            return post(path, "_method", "DELETE");
+        public HttpResponse<String> delete(String path, String... pairs) {
+            List<String> all = new ArrayList<>(List.of("_method", "DELETE"));
+            all.addAll(List.of(pairs));
+            return post(path, all.toArray(String[]::new));
         }
 
         public String follow(HttpResponse<String> redirect) {
