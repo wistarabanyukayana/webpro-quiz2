@@ -1,6 +1,6 @@
 # Spending Tracker
 
-A web app to record income and expenses, group them by category, set monthly budgets and see monthly recaps. Amounts are in Indonesian rupiah, and dates follow Western Indonesia Time (WIB).
+A web app to record income and expenses, group them by category and see monthly recaps. Amounts are in Indonesian rupiah, and dates follow Western Indonesia Time (WIB).
 
 This is a Java/JSP port of our midterm project, [TsarVib/webpro-ets](https://github.com/TsarVib/webpro-ets), which was built with Laravel. It has the same features and the same database design. Built for Quiz 2 of EF234301 Web Programming (D), Informatics, Institut Teknologi Sepuluh Nopember.
 
@@ -52,7 +52,6 @@ There is no web framework. Each page has a servlet (the controller), DAO classes
 12. **Profile settings**: change username, full name, email and initial balance. Change the password after entering the current one. Pick a theme accent and light or dark mode.
 13. **Export**: CSV of the filtered income and expense lists, and the recap as CSV, a printable HTML report or a PDF.
 14. **Delete account**: after entering the password. It removes the account and all its data.
-15. **Budgets**: a spending limit per expense category per month. The bar turns yellow at 80% of the limit and red over it.
 
 Income always shows in green with a `+` sign and expense in red with a `−` sign. These colors do not depend on the theme accent.
 
@@ -72,24 +71,20 @@ The data models are in [`docs/`](docs):
 | `default_categories` | Template categories that every new account gets a copy of                     |
 | `categories`         | Income and expense categories per account (soft deleted)                      |
 | `transactions`       | Income and expense entries: type, amount, notes, date, time                   |
-| `budgets`            | Spending limit per account, expense category and month                        |
 
 The database enforces the integrity rules itself, not only the app:
 
-- **Foreign keys:** `categories`, `transactions` and `budgets` each reference `accounts.id` with `ON DELETE CASCADE`. A composite key `(categories_id, accounts_id) → categories (id, accounts_id)` on `transactions` and `budgets` makes sure a row only uses a category of the same account.
-- **Checks:** `amount > 0`, `type IN ('income', 'expense')`, valid dates, times and months, and non-blank names.
+- **Foreign keys:** `categories` and `transactions` each reference `accounts.id` with `ON DELETE CASCADE`. A composite key `(categories_id, accounts_id) → categories (id, accounts_id)` on `transactions` makes sure a row only uses a category of the same account.
+- **Checks:** `amount > 0`, `type IN ('income', 'expense')`, valid dates and times, and non-blank names.
 - **Unique logins:** `accounts.username` and `accounts.email` each have a case-insensitive unique index.
 - **Unique active category** per account, name and type (a partial index on `deleted_at IS NULL`).
-- **One budget** per account, category and month.
 - **Triggers:**
   - A new account gets the default categories.
   - `transactions.updated_at` updates itself.
   - A transaction's type must match its category's type.
-  - A category's type is locked while it has transactions or budgets.
-  - A budget must use an expense category.
-  - Deleting a category also deletes its budgets.
+  - A category's type is locked while it has transactions.
 
-The app creates the schema on first start and tracks its version in SQLite's `user_version`. A database from an older version gets the budgets table on the next start.
+The app creates the schema on first start and tracks its version in SQLite's `user_version`.
 
 ## Running locally
 
@@ -115,11 +110,11 @@ The app stores its data in `data/tracker.db` under Tomcat's working directory. S
 ## Testing
 
 ```bash
-./mvnw test                               # 98 tests
+./mvnw test                               # 81 tests
 scripts/smoke.sh http://localhost:8080    # against a running app
 ```
 
-The tests start an embedded Tomcat with a fresh database and send real HTTP requests. They cover authentication, the dashboard, categories, transactions, filters, pagination, the recap and its exports, settings, budgets, account isolation and the database constraints and cascades. The smoke script registers a new account and goes through the main pages, forms and exports with `curl`.
+The tests start an embedded Tomcat with a fresh database and send real HTTP requests. They cover authentication, the dashboard, categories, transactions, filters, pagination, the recap and its exports, settings, account isolation and the database constraints and cascades. The smoke script registers a new account and goes through the main pages, forms and exports with `curl`.
 
 GitHub Actions runs `./mvnw test` on every push to `main` and on every pull request.
 
@@ -127,12 +122,12 @@ GitHub Actions runs `./mvnw test` on every push to `main` and on every pull requ
 
 ```text
 src/main/java/id/its/tracker/
-  controller/       Servlets: Auth, Dashboard, Category, Transaction, Budget, Recap, Settings
-  dao/              SQL for accounts, categories, transactions and budgets
+  controller/       Servlets: Auth, Dashboard, Category, Transaction, Recap, Settings
+  dao/              SQL for accounts, categories and transactions
   database/         Connection, schema version, seeders (default categories, demo account)
   filter/           Login check, CSRF token, security headers
   service/          Validation and business rules
-src/main/resources/database/   schema.sql (the midterm PDM export), extra.sql, budgets.sql
+src/main/resources/database/   schema.sql (the midterm PDM export), extra.sql
 src/main/webapp/WEB-INF/
   views/            JSP pages
   tags/             Layout and form components as tag files
