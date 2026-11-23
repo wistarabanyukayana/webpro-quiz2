@@ -132,7 +132,7 @@ src/main/java/id/its/tracker/
   database/         Connection, schema version, seeders (default categories, demo account)
   filter/           Login check, CSRF token, security headers
   service/          Validation and business rules
-src/main/resources/database/   schema.sql (the PDM export), extra.sql, budgets.sql
+src/main/resources/database/   schema.sql (the midterm PDM export), extra.sql, budgets.sql
 src/main/webapp/WEB-INF/
   views/            JSP pages
   tags/             Layout and form components as tag files
