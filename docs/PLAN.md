@@ -37,7 +37,7 @@ Extra, if there is time:
 - [x] Check the layout on phone, tablet and laptop
 - [ ] Deploy
 - [ ] Report
-- [ ] README
+- [x] README
 
 ## Submission
 
