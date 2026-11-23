@@ -35,8 +35,8 @@ Extra, if there is time:
 
 - [x] Tests (`mvn test`, `scripts/smoke.sh`)
 - [x] Check the layout on phone, tablet and laptop
-- [ ] Deploy
-- [ ] Report
+- [ ] Deploy (Ito)
+- [ ] Report (Ito)
 - [ ] README
 
 ## Submission
