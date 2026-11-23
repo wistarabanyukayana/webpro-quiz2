@@ -19,7 +19,7 @@ import java.util.Optional;
 public final class Database {
 
     // bump when adding a migration
-    static final int SCHEMA_VERSION = 1;
+    static final int SCHEMA_VERSION = 2;
 
     private static volatile String url;
 
@@ -62,10 +62,13 @@ public final class Database {
             try (Statement s = c.createStatement(); ResultSet rs = s.executeQuery("PRAGMA user_version")) {
                 version = rs.getInt(1);
             }
-            if (version < 1) {
+            if (version < SCHEMA_VERSION) {
                 c.setAutoCommit(false);
-                runScript(c, "database/schema.sql");
-                runScript(c, "database/extra.sql");
+                if (version < 1) {
+                    runScript(c, "database/schema.sql");
+                    runScript(c, "database/extra.sql");
+                }
+                runScript(c, "database/budgets.sql");
                 try (Statement s = c.createStatement()) {
                     s.execute("PRAGMA user_version = " + SCHEMA_VERSION);
                 }

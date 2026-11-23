@@ -29,7 +29,7 @@ Login, register and logout don't count toward the 8 features.
 Extra, if there is time:
 
 - [x] F14 Delete account
-- [ ] F15 Budgets per category per month
+- [x] F15 Budgets per category per month
 
 ## Todo
 

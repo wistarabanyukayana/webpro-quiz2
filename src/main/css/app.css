@@ -299,6 +299,7 @@
     --color-error: var(--error);
     --color-income: var(--income);
     --color-expense: var(--expense);
+    --color-warning: var(--swatch-yellow);
 
     --font-sans:
         Instrument Sans, ui-sans-serif, system-ui, sans-serif,

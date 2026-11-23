@@ -201,6 +201,10 @@ public final class TestApp {
         return id.its.tracker.dao.TransactionDao.create(accountId, type, categoryId, amount, notes, date, "12:00:00");
     }
 
+    public static long budget(long accountId, long categoryId, String month, long amount) {
+        return id.its.tracker.dao.BudgetDao.create(accountId, categoryId, month, amount);
+    }
+
     public static String location(HttpResponse<?> res) {
         return res.headers().firstValue("Location").map(l -> l.replace(base(), "")).orElse(null);
     }

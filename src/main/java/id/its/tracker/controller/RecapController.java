@@ -5,6 +5,7 @@ import id.its.tracker.App;
 import id.its.tracker.dao.TransactionDao;
 import id.its.tracker.model.CategoryTotal;
 import id.its.tracker.model.Transaction;
+import id.its.tracker.service.Rules;
 import id.its.tracker.service.TransactionFilters;
 import id.its.tracker.util.Csv;
 import id.its.tracker.util.Web;
@@ -152,22 +153,18 @@ public class RecapController extends HttpServlet {
             errors.put("mode", "The selected mode is invalid.");
         }
         for (String field : List.of("month", "from", "to")) {
-            if (input.get(field) != null && !isMonth(input.get(field))) {
+            if (input.get(field) != null && !Rules.isMonth(input.get(field))) {
                 errors.put(field, "The " + field + " field must match the format Y-m.");
             }
         }
         String from = input.get("from");
         String to = input.get("to");
-        if (to != null && !errors.containsKey("to") && (from == null || !isMonth(from) || to.compareTo(from) < 0)) {
+        if (to != null && !errors.containsKey("to") && (from == null || !Rules.isMonth(from) || to.compareTo(from) < 0)) {
             errors.put("to", "The to field must be a date after or equal to from.");
         }
         if (input.get("year") != null && !input.get("year").matches("[0-9]{4}")) {
             errors.put("year", "The year field must match the format Y.");
         }
-    }
-
-    private static boolean isMonth(String value) {
-        return value.matches("[0-9]{4}-(0[1-9]|1[0-2])");
     }
 
     private static String or(String value, String fallback) {

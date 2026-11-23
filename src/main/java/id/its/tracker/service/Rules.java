@@ -27,6 +27,10 @@ public final class Rules {
         }
     }
 
+    public static boolean isMonth(String value) {
+        return value.matches("[0-9]{4}-(0[1-9]|1[0-2])");
+    }
+
     static boolean isTime(String value) {
         try {
             LocalTime.parse(value, TIME);
