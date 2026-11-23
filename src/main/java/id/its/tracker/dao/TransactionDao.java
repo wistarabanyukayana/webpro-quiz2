@@ -50,8 +50,8 @@ public final class TransactionDao {
                 params.add(f.category());
             }
             if (f.q() != null) {
-                sql.append(" AND t.notes LIKE ?");
-                params.add("%" + f.q() + "%");
+                sql.append(" AND t.notes LIKE ? ESCAPE '\\'");
+                params.add("%" + f.q().replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_") + "%");
             }
             return new Where(sql.toString(), params);
         }

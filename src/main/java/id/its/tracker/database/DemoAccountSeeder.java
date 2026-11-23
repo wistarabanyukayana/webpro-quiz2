@@ -48,7 +48,8 @@ final class DemoAccountSeeder {
     }
 
     static void run(Connection c) throws SQLException {
-        try (PreparedStatement ps = c.prepareStatement("SELECT 1 FROM accounts WHERE username = 'demo'");
+        try (PreparedStatement ps = c.prepareStatement(
+                "SELECT 1 FROM accounts WHERE lower(username) = 'demo' OR lower(email) = 'demo@example.com'");
              ResultSet rs = ps.executeQuery()) {
             if (rs.next()) {
                 return;

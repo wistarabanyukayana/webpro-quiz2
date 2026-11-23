@@ -1,6 +1,7 @@
 package id.its.tracker.controller;
 
 import id.its.tracker.dao.AccountDao;
+import id.its.tracker.database.Database;
 import id.its.tracker.model.Account;
 import id.its.tracker.service.AccountService;
 import id.its.tracker.service.Passwords;
@@ -19,12 +20,9 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Pattern;
 
 @WebServlet({"/login", "/register", "/logout"})
 public class AuthController extends HttpServlet {
-
-    private static final Pattern EMAIL = Pattern.compile("[^@\\s]+@[^@\\s.]+(\\.[^@\\s.]+)+");
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
@@ -63,7 +61,19 @@ public class AuthController extends HttpServlet {
         }
 
         // the insert trigger copies the default categories
-        AccountDao.create(username, fullName, email, Passwords.hash(password));
+        try {
+            AccountDao.create(username, fullName, email, Passwords.hash(password));
+        } catch (Database.DbException e) {
+            if (!e.isUniqueViolation()) {
+                throw e;
+            }
+            AccountService.checkIdentity(username, fullName, email, 0, errors);
+            Map<String, String> old = Web.old(req, "full_name");
+            old.put("username", username);
+            old.put("email", email);
+            Web.invalid(req, res, "auth/register", errors, old);
+            return;
+        }
         res.sendRedirect("/login");
     }
 
@@ -90,10 +100,8 @@ public class AuthController extends HttpServlet {
             return;
         }
 
-        login = login.toLowerCase(Locale.ROOT);
-        Optional<Account> account = EMAIL.matcher(login).matches()
-                ? AccountDao.findByEmail(login)
-                : AccountDao.findByUsername(login);
+        String key = login.toLowerCase(Locale.ROOT);
+        Optional<Account> account = AccountDao.findByEmail(key).or(() -> AccountDao.findByUsername(key));
         if (account.isEmpty() || !Passwords.verify(password, account.get().passwordHash())) {
             Web.invalid(req, res, "auth/login", Map.of("login", "These credentials do not match our records."), old);
             return;

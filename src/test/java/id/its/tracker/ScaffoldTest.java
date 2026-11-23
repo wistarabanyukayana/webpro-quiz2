@@ -58,5 +58,11 @@ class ScaffoldTest {
         assertTrue(missing.body().contains("Page not found"));
         client.get("/login");
         assertEquals(419, client.postRaw("/login", "login", "demo", "password", "demo1234").statusCode());
+        var directDelete = java.net.http.HttpRequest.newBuilder(java.net.URI.create(TestApp.base() + "/transactions/1")).DELETE().build();
+        try {
+            assertEquals(419, client.http().send(directDelete, HttpResponse.BodyHandlers.ofString()).statusCode());
+        } catch (Exception e) {
+            throw new AssertionError(e);
+        }
     }
 }

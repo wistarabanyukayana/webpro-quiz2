@@ -19,6 +19,7 @@ import java.util.Set;
 public class RequestFilter extends HttpFilter {
 
     private static final SecureRandom RANDOM = new SecureRandom();
+    private static final Set<String> SAFE = Set.of("GET", "HEAD", "OPTIONS");
     private static final Set<String> OVERRIDES = Set.of("PATCH", "PUT", "DELETE");
     private static final String CSP = String.join("; ",
             "default-src 'self'",
@@ -46,7 +47,7 @@ public class RequestFilter extends HttpFilter {
             return;
         }
 
-        if ("POST".equals(req.getMethod())) {
+        if (!SAFE.contains(req.getMethod())) {
             HttpSession session = req.getSession(false);
             String expected = session == null ? null : (String) session.getAttribute(Web.CSRF);
             String given = req.getParameter("_token");
@@ -55,15 +56,17 @@ public class RequestFilter extends HttpFilter {
                 res.sendError(419);
                 return;
             }
-            String override = req.getParameter("_method");
-            if (override != null && OVERRIDES.contains(override.toUpperCase())) {
-                String method = override.toUpperCase();
-                req = new HttpServletRequestWrapper(req) {
-                    @Override
-                    public String getMethod() {
-                        return method;
-                    }
-                };
+            if ("POST".equals(req.getMethod())) {
+                String override = req.getParameter("_method");
+                if (override != null && OVERRIDES.contains(override.toUpperCase())) {
+                    String method = override.toUpperCase();
+                    req = new HttpServletRequestWrapper(req) {
+                        @Override
+                        public String getMethod() {
+                            return method;
+                        }
+                    };
+                }
             }
         } else {
             HttpSession session = req.getSession();

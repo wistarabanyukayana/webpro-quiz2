@@ -114,24 +114,6 @@
         });
     });
 
-    // only show categories of the selected type
-    document.querySelectorAll('select[data-type-select]').forEach(function (typeSelect) {
-        var categorySelect = document.getElementById(typeSelect.dataset.typeSelect);
-        function sync() {
-            var type = typeSelect.value;
-            Array.prototype.forEach.call(categorySelect.options, function (option) {
-                var match = !option.dataset.type || !type || option.dataset.type === type;
-                option.hidden = !match;
-                option.disabled = !match;
-                if (!match && option.selected) {
-                    categorySelect.value = '';
-                }
-            });
-        }
-        typeSelect.addEventListener('change', sync);
-        sync();
-    });
-
     // data-show-when="selectId:value1,value2"
     document.querySelectorAll('[data-show-when]').forEach(function (element) {
         var parts = element.dataset.showWhen.split(':');

@@ -140,6 +140,10 @@ class IntegrityTest {
         assertEquals(2, tableRows(keyword));
         assertTrue(keyword.contains("name=\"q\" type=\"text\" placeholder=\"Search notes...\" value=\"lunch\""));
 
+        TestApp.transaction(accountId, food, "expense", 100, "2026-10-07", "50% off");
+        assertEquals(1, tableRows(client.get("/expense?q=0").body()));
+        assertEquals(1, tableRows(client.get("/expense?q=%25").body()));
+
         HttpResponse<String> bad = client.get("/expense?from=2026-10-31&to=2026-10-01");
         assertEquals(422, bad.statusCode());
         assertTrue(bad.body().contains("The to field must be a date after or equal to from."));

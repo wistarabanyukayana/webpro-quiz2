@@ -1,6 +1,7 @@
 package id.its.tracker.controller;
 
 import id.its.tracker.dao.AccountDao;
+import id.its.tracker.database.Database;
 import id.its.tracker.model.Account;
 import id.its.tracker.service.AccountService;
 import id.its.tracker.service.Passwords;
@@ -74,7 +75,19 @@ public class SettingsController extends HttpServlet {
             return;
         }
 
-        AccountDao.updateProfile(account.id(), username, fullName, email, balance);
+        try {
+            AccountDao.updateProfile(account.id(), username, fullName, email, balance);
+        } catch (Database.DbException e) {
+            if (!e.isUniqueViolation()) {
+                throw e;
+            }
+            AccountService.checkIdentity(username, fullName, email, account.id(), errors);
+            Map<String, String> old = Web.old(req, "full_name", "initial_balance");
+            old.put("username", username);
+            old.put("email", email);
+            Web.back(req, res, "/settings", errors, old, null);
+            return;
+        }
         req.getSession().setAttribute(SAVED, "profile");
         Web.back(req, res, "/settings", null, null, null);
     }

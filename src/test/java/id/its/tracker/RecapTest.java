@@ -117,6 +117,7 @@ class RecapTest {
 
         assertEquals(422, client.get("/recap?mode=week").statusCode());
         assertEquals(422, client.get("/recap?month=2026-13").statusCode());
+        assertEquals(422, client.get("/recap?mode=range&from=2099-12").statusCode());
         assertEquals(422, client.get("/recap?mode=year&year=26").statusCode());
         assertEquals("/recap?month=2026-13", location(client.get("/recap/pdf?month=2026-13")));
     }

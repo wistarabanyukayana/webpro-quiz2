@@ -45,9 +45,6 @@ public record TransactionFilters(String type, String from, String to, Long categ
         if (type != null && !type.equals("income") && !type.equals("expense")) {
             errors.put("type", "The selected type is invalid.");
         }
-        if (!withType && "0".equals(q)) {
-            q = null;
-        }
         return errors.size() > before ? NONE : new TransactionFilters(type, from, to, category, q);
     }
 }

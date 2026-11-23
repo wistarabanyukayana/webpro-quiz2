@@ -19,8 +19,4 @@ public final class Fmt {
     public static String date(String isoDate) {
         return isoDate == null ? "" : LocalDate.parse(isoDate).format(DATE);
     }
-
-    public static String time(String isoTime) {
-        return isoTime == null || isoTime.length() < 5 ? "" : isoTime.substring(0, 5);
-    }
 }

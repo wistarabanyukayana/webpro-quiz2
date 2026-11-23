@@ -30,8 +30,4 @@ public final class LoginThrottle {
         }
         return Math.max(1, (window.start() + WINDOW_MILLIS - now + 999) / 1000);
     }
-
-    static void reset() {
-        WINDOWS.clear();
-    }
 }

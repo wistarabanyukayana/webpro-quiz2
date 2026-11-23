@@ -81,14 +81,16 @@ public class RecapController extends HttpServlet {
         }
 
         TransactionFilters period = new TransactionFilters(null, start.toString(), end.toString(), null, null);
-        long income = TransactionDao.sum(accountId, period.withType("income"));
-        long expense = TransactionDao.sum(accountId, period.withType("expense"));
         List<CategoryTotal> totals = TransactionDao.totalsByCategory(accountId, period);
-        List<Transaction> rows = TransactionDao.all(accountId, period);
+        List<CategoryTotal> incomeTotals = ofType(totals, "income");
+        List<CategoryTotal> expenseTotals = ofType(totals, "expense");
+        long income = incomeTotals.stream().mapToLong(CategoryTotal::total).sum();
+        long expense = expenseTotals.stream().mapToLong(CategoryTotal::total).sum();
         String slug = label.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]+", "-");
 
         switch (path) {
             case "/recap/csv" -> {
+                List<Transaction> rows = TransactionDao.all(accountId, period);
                 res.setContentType("text/csv; charset=UTF-8");
                 res.setHeader("Content-Disposition", "attachment; filename=\"recap-" + slug + ".csv\"");
                 PrintWriter out = res.getWriter();
@@ -103,9 +105,9 @@ public class RecapController extends HttpServlet {
                 req.setAttribute("income", income);
                 req.setAttribute("expense", expense);
                 req.setAttribute("net", income - expense);
-                req.setAttribute("incomeTotals", ofType(totals, "income"));
-                req.setAttribute("expenseTotals", ofType(totals, "expense"));
-                req.setAttribute("rows", rows);
+                req.setAttribute("incomeTotals", incomeTotals);
+                req.setAttribute("expenseTotals", expenseTotals);
+                req.setAttribute("rows", TransactionDao.all(accountId, period));
                 if (path.equals("/recap/report")) {
                     req.getRequestDispatcher("/WEB-INF/views/recap/report.jsp").forward(req, res);
                 } else {
@@ -117,8 +119,6 @@ public class RecapController extends HttpServlet {
             }
         }
 
-        List<CategoryTotal> incomeTotals = ofType(totals, "income");
-        List<CategoryTotal> expenseTotals = ofType(totals, "expense");
         req.setAttribute("mode", mode);
         req.setAttribute("month", month);
         req.setAttribute("from", from);
@@ -159,7 +159,9 @@ public class RecapController extends HttpServlet {
         }
         String from = input.get("from");
         String to = input.get("to");
-        if (to != null && !errors.containsKey("to") && (from == null || !Rules.isMonth(from) || to.compareTo(from) < 0)) {
+        String effectiveTo = to != null ? to : YearMonth.from(App.today()).toString();
+        if (!errors.containsKey("to") && ((to != null && (from == null || !Rules.isMonth(from)))
+                || (from != null && Rules.isMonth(from) && effectiveTo.compareTo(from) < 0))) {
             errors.put("to", "The to field must be a date after or equal to from.");
         }
         if (input.get("year") != null && !input.get("year").matches("[0-9]{4}")) {

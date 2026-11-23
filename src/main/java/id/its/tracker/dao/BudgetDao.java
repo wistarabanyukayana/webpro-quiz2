@@ -13,7 +13,8 @@ public final class BudgetDao {
     private static final String SELECT = """
             SELECT b.id, b.categories_id, c.name, b.month, b.amount,
                    (SELECT coalesce(sum(t.amount), 0) FROM transactions t
-                    WHERE t.categories_id = b.categories_id AND t.type = 'expense' AND substr(t.date, 1, 7) = b.month) AS spent
+                    WHERE t.accounts_id = b.accounts_id AND t.categories_id = b.categories_id
+                      AND t.type = 'expense' AND t.date >= b.month || '-01' AND t.date <= b.month || '-31') AS spent
             FROM budgets b
             JOIN categories c ON c.id = b.categories_id
             WHERE b.accounts_id = ?""";

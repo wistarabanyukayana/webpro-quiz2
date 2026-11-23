@@ -25,3 +25,5 @@ WHEN NEW.type IS NOT OLD.type
 BEGIN
     SELECT RAISE(ABORT, 'category type is locked while it has transactions');
 END;
+
+CREATE INDEX IF NOT EXISTS ix_transactions_category ON transactions (accounts_id, categories_id, date);

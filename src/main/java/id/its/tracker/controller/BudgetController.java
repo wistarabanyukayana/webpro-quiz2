@@ -3,6 +3,7 @@ package id.its.tracker.controller;
 import id.its.tracker.App;
 import id.its.tracker.dao.BudgetDao;
 import id.its.tracker.dao.CategoryDao;
+import id.its.tracker.database.Database;
 import id.its.tracker.model.Budget;
 import id.its.tracker.service.BudgetService;
 import id.its.tracker.service.Rules;
@@ -84,7 +85,16 @@ public class BudgetController extends HttpServlet {
             Web.back(req, res, LIST, errors, old, "new");
             return;
         }
-        BudgetDao.create(accountId, in.categoryId(), in.month(), in.amount());
+        try {
+            BudgetDao.create(accountId, in.categoryId(), in.month(), in.amount());
+        } catch (Database.DbException e) {
+            if (!e.isUniqueViolation()) {
+                throw e;
+            }
+            errors.put("category_id", "This category already has a budget for that month.");
+            Web.back(req, res, LIST, errors, old, "new");
+            return;
+        }
         res.sendRedirect(LIST + "?month=" + in.month());
     }
 
@@ -103,7 +113,16 @@ public class BudgetController extends HttpServlet {
             Web.back(req, res, LIST, errors, old, "edit-" + budget.get().id());
             return;
         }
-        BudgetDao.update(accountId, budget.get().id(), in.categoryId(), in.month(), in.amount());
+        try {
+            BudgetDao.update(accountId, budget.get().id(), in.categoryId(), in.month(), in.amount());
+        } catch (Database.DbException e) {
+            if (!e.isUniqueViolation()) {
+                throw e;
+            }
+            errors.put("category_id", "This category already has a budget for that month.");
+            Web.back(req, res, LIST, errors, old, "edit-" + budget.get().id());
+            return;
+        }
         res.sendRedirect(LIST + "?month=" + in.month());
     }
 

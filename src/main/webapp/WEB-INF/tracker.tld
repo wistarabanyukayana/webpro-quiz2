@@ -16,9 +16,4 @@
         <function-class>id.its.tracker.util.Fmt</function-class>
         <function-signature>java.lang.String date(java.lang.String)</function-signature>
     </function>
-    <function>
-        <name>time</name>
-        <function-class>id.its.tracker.util.Fmt</function-class>
-        <function-signature>java.lang.String time(java.lang.String)</function-signature>
-    </function>
 </taglib>

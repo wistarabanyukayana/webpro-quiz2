@@ -1,6 +1,7 @@
 package id.its.tracker.controller;
 
 import id.its.tracker.dao.CategoryDao;
+import id.its.tracker.database.Database;
 import id.its.tracker.model.Category;
 import id.its.tracker.service.CategoryService;
 import id.its.tracker.util.Web;
@@ -62,7 +63,14 @@ public class CategoryController extends HttpServlet {
         String type = Web.param(req, "type");
         Map<String, String> errors = new HashMap<>();
         if (CategoryService.validate(accountId, name, type, null, errors)) {
-            CategoryDao.create(accountId, name, type);
+            try {
+                CategoryDao.create(accountId, name, type);
+            } catch (Database.DbException e) {
+                if (!e.isUniqueViolation()) {
+                    throw e;
+                }
+                errors.put("name", "The name has already been taken.");
+            }
         }
         Web.back(req, res, LIST, errors, Web.old(req, "name", "type"), "new");
     }
@@ -79,7 +87,14 @@ public class CategoryController extends HttpServlet {
         String type = Web.param(req, "type");
         Map<String, String> errors = new HashMap<>();
         if (CategoryService.validate(accountId, name, type, category.get(), errors)) {
-            CategoryDao.update(accountId, category.get().id(), name, type);
+            try {
+                CategoryDao.update(accountId, category.get().id(), name, type);
+            } catch (Database.DbException e) {
+                if (!e.isUniqueViolation()) {
+                    throw e;
+                }
+                errors.put("name", "The name has already been taken.");
+            }
         }
         Web.back(req, res, LIST, errors, Web.old(req, "name", "type"), "edit-" + category.get().id());
     }

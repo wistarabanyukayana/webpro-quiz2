@@ -19,7 +19,7 @@ import java.util.Optional;
 public final class Database {
 
     // bump when adding a migration
-    static final int SCHEMA_VERSION = 2;
+    static final int SCHEMA_VERSION = 3;
 
     private static volatile String url;
 
@@ -34,6 +34,10 @@ public final class Database {
     public static final class DbException extends RuntimeException {
         DbException(SQLException cause) {
             super(cause.getMessage(), cause);
+        }
+
+        public boolean isUniqueViolation() {
+            return getMessage() != null && getMessage().contains("UNIQUE constraint failed");
         }
     }
 
@@ -58,6 +62,9 @@ public final class Database {
 
     public static void bootstrap() {
         try (Connection c = connect()) {
+            try (Statement s = c.createStatement()) {
+                s.execute("PRAGMA journal_mode = WAL");
+            }
             int version;
             try (Statement s = c.createStatement(); ResultSet rs = s.executeQuery("PRAGMA user_version")) {
                 version = rs.getInt(1);
@@ -68,7 +75,14 @@ public final class Database {
                     runScript(c, "database/schema.sql");
                     runScript(c, "database/extra.sql");
                 }
-                runScript(c, "database/budgets.sql");
+                if (version < 2) {
+                    runScript(c, "database/budgets.sql");
+                }
+                if (version < 3) {
+                    try (Statement s = c.createStatement()) {
+                        s.execute("CREATE INDEX IF NOT EXISTS ix_transactions_category ON transactions (accounts_id, categories_id, date)");
+                    }
+                }
                 try (Statement s = c.createStatement()) {
                     s.execute("PRAGMA user_version = " + SCHEMA_VERSION);
                 }
