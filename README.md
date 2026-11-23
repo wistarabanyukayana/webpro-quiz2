@@ -139,5 +139,5 @@ src/main/webapp/WEB-INF/
 src/main/css/       Tailwind source
 src/test/java/      JUnit tests
 scripts/smoke.sh    Smoke test
-docs/               Data models and the build plan
+docs/               Assignment brief, data models and the build plan
 ```
