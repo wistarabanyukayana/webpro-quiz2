@@ -60,7 +60,7 @@
         <c:choose>
             <c:when test="${income == 0 and expense == 0}">
                 <div class="grid gap-2 rounded-xl border border-border bg-surface p-6">
-                    <h2 class="text-sm font-medium text-ink">No data for this month</h2>
+                    <h2 class="text-sm font-medium text-ink">No data for this period</h2>
                     <p class="text-sm text-muted">Record an income or expense to see the breakdown here.</p>
                 </div>
             </c:when>

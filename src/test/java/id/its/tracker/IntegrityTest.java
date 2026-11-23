@@ -256,7 +256,7 @@ class IntegrityTest {
     @Test
     void theRecapShowsAnEmptyStateWithNoData() {
         String page = TestApp.signedIn(unique("recap")).get("/recap?month=2020-01").body();
-        assertTrue(page.contains("No data for this month"));
+        assertTrue(page.contains("No data for this period"));
         assertTrue(page.contains(">+Rp\u00a00<"), "income");
         assertTrue(page.contains(">-Rp\u00a00<"), "expense");
         assertTrue(page.contains(">Rp\u00a00<"), "net");
@@ -287,11 +287,10 @@ class IntegrityTest {
         Database.update("UPDATE accounts SET full_name = ? WHERE id = ?", evil, accountId);
         long category = TestApp.category(accountId, "expense", evil);
         long tx = TestApp.transaction(accountId, category, "expense", 100, App.today().toString(), evil);
-        long budget = TestApp.budget(accountId, category, App.today().toString().substring(0, 7), 1000);
         TestApp.Client client = new TestApp.Client().login(name, TestApp.PASSWORD);
 
         for (String path : List.of("/", "/expense", "/expense?edit=" + tx, "/categories", "/categories?edit=" + category,
-                "/budgets", "/budgets?edit=" + budget, "/recap", "/recap/report", "/settings")) {
+                "/recap", "/recap/report", "/settings")) {
             String page = client.get(path).body();
             assertFalse(page.contains("<b id=x>"), path + " shows raw markup");
             assertTrue(page.contains("&lt;b id=x&gt;"), path + " shows the escaped text");
@@ -299,16 +298,14 @@ class IntegrityTest {
     }
 
     @Test
-    void deletingAnAccountDeletesItsCategoriesTransactionsAndBudgetsOnly() {
+    void deletingAnAccountDeletesItsCategoriesAndTransactionsOnly() {
         String name = unique("cascade");
         long accountId = TestApp.account(name);
         long food = TestApp.category(accountId, "expense", "Food");
         TestApp.transaction(accountId, food, "expense", 1000, "2026-10-25", null);
-        TestApp.budget(accountId, food, "2026-10", 5000);
         long otherId = TestApp.account(unique("kept"));
         long otherFood = TestApp.category(otherId, "expense", "Food");
         TestApp.transaction(otherId, otherFood, "expense", 2000, "2026-10-25", null);
-        TestApp.budget(otherId, otherFood, "2026-10", 5000);
 
         TestApp.Client client = new TestApp.Client().login(name, TestApp.PASSWORD);
         assertEquals("/login", location(client.delete("/settings", "delete_password", TestApp.PASSWORD)));
@@ -317,7 +314,5 @@ class IntegrityTest {
         assertEquals(0, count("SELECT COUNT(*) FROM transactions WHERE accounts_id = ?", accountId));
         assertTrue(count("SELECT COUNT(*) FROM categories WHERE accounts_id = ?", otherId) > 1);
         assertEquals(1, count("SELECT COUNT(*) FROM transactions WHERE accounts_id = ?", otherId));
-        assertEquals(0, count("SELECT COUNT(*) FROM budgets WHERE accounts_id = ?", accountId));
-        assertEquals(1, count("SELECT COUNT(*) FROM budgets WHERE accounts_id = ?", otherId));
     }
 }

@@ -205,6 +205,24 @@ class AuthenticationTest {
         assertEquals(0, Database.scalar("SELECT count(*) FROM transactions WHERE accounts_id = ? AND date > ?",
                 demo.id(), App.today().toString()));
         assertEquals("/", location(new TestApp.Client().post("/login", "login", "demo", "password", "demo1234")));
+
+        Database.update("UPDATE accounts SET username = 'demo-renamed' WHERE id = ?", demo.id());
+        try {
+            Database.bootstrap();
+            assertEquals(1, Database.scalar("SELECT count(*) FROM accounts WHERE email = 'demo@example.com'"));
+        } finally {
+            Database.update("UPDATE accounts SET username = 'demo' WHERE id = ?", demo.id());
+        }
+    }
+
+    @Test
+    void dotlessEmailCanRegisterAndLogIn() {
+        String name = unique("local");
+        TestApp.Client client = new TestApp.Client();
+        assertEquals("/login", location(client.post("/register", "username", name, "full_name", "Local User",
+                "email", name + "@localhost", "password", PASSWORD, "password_confirmation", PASSWORD)));
+        assertEquals("/", location(client.post("/login", "login", name + "@localhost", "password", PASSWORD)));
+        assertTrue(signedIn(client));
     }
 
     @Test

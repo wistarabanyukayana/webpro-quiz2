@@ -1,4 +1,3 @@
-# build css
 FROM node:24-alpine AS css
 WORKDIR /app
 COPY package.json package-lock.json ./
@@ -6,7 +5,6 @@ RUN npm ci --ignore-scripts
 COPY src/main ./src/main
 RUN npm run build:css
 
-# build war
 FROM eclipse-temurin:21-jdk-noble AS war
 WORKDIR /app
 COPY .mvn .mvn
@@ -16,7 +14,6 @@ COPY src ./src
 COPY --from=css /app/src/main/webapp/assets/app.css src/main/webapp/assets/app.css
 RUN ./mvnw -q -B package -DskipTests
 
-# run
 FROM tomcat:11.0.29-jre21-temurin-noble
 RUN rm -rf /usr/local/tomcat/webapps/* \
     && useradd --system --uid 10001 --home-dir /usr/local/tomcat tracker \

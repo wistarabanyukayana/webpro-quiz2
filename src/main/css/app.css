@@ -299,7 +299,6 @@
     --color-error: var(--error);
     --color-income: var(--income);
     --color-expense: var(--expense);
-    --color-warning: var(--swatch-yellow);
 
     --font-sans:
         Instrument Sans, ui-sans-serif, system-ui, sans-serif,
@@ -322,7 +321,6 @@
     }
 }
 
-/* dialogs */
 @layer base {
     dialog::backdrop {
         background: rgb(17 17 27 / 0.55);

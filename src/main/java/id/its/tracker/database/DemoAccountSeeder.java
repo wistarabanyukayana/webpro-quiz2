@@ -8,7 +8,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,12 +36,6 @@ final class DemoAccountSeeder {
         new Entry(0, 7, "income", "Gift", 500_000, "Birthday gift", "11:00"),
         new Entry(0, 8, "expense", "Transport", 120_000, "Ride hailing", "08:20"),
     };
-
-    private static final Map<String, Long> DEMO_BUDGETS = Map.of(
-        "Bills", 1_000_000L,
-        "Food & Drink", 1_500_000L,
-        "Transport", 100_000L,
-        "Entertainment", 300_000L);
 
     private DemoAccountSeeder() {
     }
@@ -86,7 +79,6 @@ final class DemoAccountSeeder {
             for (Entry e : DEMO_ENTRIES) {
                 LocalDate month = today.withDayOfMonth(1).minusMonths(e.monthsAgo());
                 LocalDate date = month.withDayOfMonth(Math.min(e.day(), month.lengthOfMonth()));
-                // no future dates
                 if (date.isAfter(today)) {
                     date = today;
                 }
@@ -98,18 +90,6 @@ final class DemoAccountSeeder {
                 ps.setLong(6, accountId);
                 ps.setLong(7, categoryIds.get(e.category()));
                 ps.executeUpdate();
-            }
-        }
-        try (PreparedStatement ps = c.prepareStatement(
-                "INSERT INTO budgets (month, amount, accounts_id, categories_id) VALUES (?, ?, ?, ?)")) {
-            for (int monthsAgo = 0; monthsAgo <= 1; monthsAgo++) {
-                for (Map.Entry<String, Long> b : DEMO_BUDGETS.entrySet()) {
-                    ps.setString(1, YearMonth.from(today).minusMonths(monthsAgo).toString());
-                    ps.setLong(2, b.getValue());
-                    ps.setLong(3, accountId);
-                    ps.setLong(4, categoryIds.get(b.getKey()));
-                    ps.executeUpdate();
-                }
             }
         }
     }

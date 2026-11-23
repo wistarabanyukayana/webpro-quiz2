@@ -44,11 +44,13 @@ class RecapTest {
         long other = TestApp.account(unique("recap"));
         TestApp.transaction(other, TestApp.category(other, "income", "Other"), "income", 999_999, "2026-10-10", null);
 
-        String page = TestApp.signedIn(unique("recap")).get("/recap?month=2026-10").body();
+        TestApp.Client viewer = TestApp.signedIn(unique("recap"));
+        String page = viewer.get("/recap?month=2026-10").body();
         assertTrue(page.contains(">+Rp\u00a00</p>"));
         assertTrue(page.contains(">-Rp\u00a00</p>"));
-        assertTrue(page.contains("No data for this month"));
+        assertTrue(page.contains("No data for this period"));
         assertFalse(page.contains("999.999"));
+        assertTrue(viewer.get("/recap/report?month=2026-10").body().contains(">Rp\u00a00<"));
     }
 
     @Test

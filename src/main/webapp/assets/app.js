@@ -17,7 +17,6 @@
         });
     });
 
-    // accent picker
     function showAccent(input) {
         document.querySelectorAll('[data-accent-label]').forEach(function (label) {
             label.textContent = input.dataset.label;
@@ -35,7 +34,6 @@
         });
     });
 
-    // show/hide password
     document.querySelectorAll('[data-reveal]').forEach(function (button) {
         var input = document.getElementById(button.dataset.reveal);
         button.addEventListener('click', function () {
@@ -64,7 +62,6 @@
         });
     });
 
-    // confirm before submit
     var confirmDialog = document.getElementById('confirm-dialog');
     var pending = null;
     document.querySelectorAll('form[data-confirm]').forEach(function (form) {
@@ -88,7 +85,6 @@
         });
     }
 
-    // dialogs
     document.querySelectorAll('[data-dialog-open]').forEach(function (button) {
         button.addEventListener('click', function (event) {
             var dialog = document.getElementById(button.dataset.dialogOpen);
@@ -131,7 +127,6 @@
     });
 })();
 
-// loading text on submit
 document.addEventListener('submit', function (event) {
     if (event.defaultPrevented) {
         return;

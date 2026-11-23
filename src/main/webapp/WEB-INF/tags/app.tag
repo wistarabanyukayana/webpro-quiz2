@@ -9,8 +9,8 @@
 <t:html title="${title}">
 <div class="flex h-dvh flex-col overflow-hidden md:flex-row">
     <aside class="flex w-full shrink-0 flex-col gap-4 border-b border-border bg-surface p-3 md:h-dvh md:w-60 md:justify-between md:gap-6 md:border-r md:border-b-0 md:p-4">
-        <nav class="grid grid-cols-3 gap-1 sm:grid-cols-6 md:grid-cols-1" aria-label="Main">
-            <c:forEach var="link" items="${['/|Dashboard|dashboard', '/income|Income|income', '/expense|Expense|expense', '/budgets|Budgets|budgets', '/categories|Categories|categories', '/recap|Recap|recap']}">
+        <nav class="grid grid-cols-3 gap-1 sm:grid-cols-5 md:grid-cols-1" aria-label="Main">
+            <c:forEach var="link" items="${['/|Dashboard|dashboard', '/income|Income|income', '/expense|Expense|expense', '/categories|Categories|categories', '/recap|Recap|recap']}">
                 <c:set var="parts" value="${link.split('[|]')}"/>
                 <a href="${parts[0]}" class="${item} max-md:text-xs max-sm:h-9 max-sm:justify-center max-sm:gap-1.5 max-sm:px-2 sm:max-md:h-auto sm:max-md:flex-col sm:max-md:gap-1 sm:max-md:px-1 sm:max-md:py-2 ${currentPath == parts[0] ? active : idle}"${currentPath == parts[0] ? ' aria-current="page"' : ''}>
                     <ui:nav-icon name="${parts[2]}" cls="size-4 shrink-0"/>

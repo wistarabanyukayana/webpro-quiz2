@@ -79,16 +79,6 @@ get "/recap/report?month=$MONTH"; has "Financial recap" "printable report"
 get "/recap/pdf?month=$MONTH"; head -c 5 "$BODY" | grep -q '%PDF-' || fail "recap PDF is not a PDF"
 ok "CSV, report and PDF exports"
 
-# Budgets
-send /budgets category_id="$CAT" month="$MONTH" amount=50000 >/dev/null
-get "/budgets?month=$MONTH"
-BUD=$(grep -o 'action="/budgets/[0-9]*"' "$BODY" | head -1 | grep -o '[0-9]*' || true)
-[[ -n $BUD ]] || fail "new budget not listed"; has "46%" "budget progress"; ok "create budget $BUD"
-send "/budgets/$BUD" _method=PATCH category_id="$CAT" month="$MONTH" amount=20000 >/dev/null
-get "/budgets?month=$MONTH"; has "Over by" "edited budget"; ok "edit budget"
-send "/budgets/$BUD" _method=DELETE back="/budgets?month=$MONTH" >/dev/null
-get "/budgets?month=$MONTH"; hasnt "action=\"/budgets/$BUD\"" "deleted budget"; ok "delete budget"
-
 # Settings
 get /settings
 send /settings _method=PATCH username="$USER" full_name="Smoke Renamed" email="$USER@example.com" initial_balance=1000 >/dev/null

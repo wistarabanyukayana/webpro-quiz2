@@ -34,7 +34,7 @@
     <div class="summary">
         <div class="income-box"><strong>Income</strong><br/><span class="income">+${tr:money(income)}</span></div>
         <div class="expense-box"><strong>Expense</strong><br/><span class="expense">-${tr:money(expense)}</span></div>
-        <div><strong>Net change</strong><br/><span class="${net lt 0 ? 'expense' : 'income'}">${net lt 0 ? '' : '+'}${tr:money(net)}</span></div>
+        <div><strong>Net change</strong><br/><span class="${net lt 0 ? 'expense' : 'income'}">${net gt 0 ? '+' : ''}${tr:money(net)}</span></div>
     </div>
 
     <div class="category-grid">

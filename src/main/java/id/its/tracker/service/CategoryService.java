@@ -1,6 +1,5 @@
 package id.its.tracker.service;
 
-import id.its.tracker.dao.BudgetDao;
 import id.its.tracker.dao.CategoryDao;
 import id.its.tracker.model.Category;
 
@@ -24,12 +23,8 @@ public final class CategoryService {
         } else if (!type.equals("income") && !type.equals("expense")) {
             errors.put("type", "The selected type is invalid.");
         }
-        if (errors.isEmpty() && existing != null && !type.equals(existing.type())) {
-            if (existing.transactionCount() > 0) {
-                errors.put("type", "This category cannot change type while it has transactions.");
-            } else if (BudgetDao.usesCategory(existing.id())) {
-                errors.put("type", "This category cannot change type while it has budgets.");
-            }
+        if (errors.isEmpty() && existing != null && !type.equals(existing.type()) && existing.transactionCount() > 0) {
+            errors.put("type", "This category cannot change type while it has transactions.");
         }
         return errors.isEmpty();
     }

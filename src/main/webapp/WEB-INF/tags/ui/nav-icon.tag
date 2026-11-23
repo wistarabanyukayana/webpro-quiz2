@@ -10,7 +10,6 @@
     </c:when>
     <c:when test="${name == 'income'}"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M4 19h16"/></c:when>
     <c:when test="${name == 'expense'}"><path d="M12 21V9"/><path d="m7 14 5-5 5 5"/><path d="M4 3h16"/></c:when>
-    <c:when test="${name == 'budgets'}"><path d="M3.34 19a10 10 0 1 1 17.32 0"/><path d="m12 14 4-4"/></c:when>
     <c:when test="${name == 'categories'}"><path d="M4 11V5a1 1 0 0 1 1-1h6l9 9-7 7-9-9z"/><circle cx="8" cy="8" r="1"/></c:when>
     <c:when test="${name == 'recap'}">
         <path d="M4 20h16"/><rect x="5" y="11" width="3.5" height="6" rx="1"/>

@@ -19,7 +19,7 @@ import java.util.Optional;
 public final class Database {
 
     // bump when adding a migration
-    static final int SCHEMA_VERSION = 3;
+    static final int SCHEMA_VERSION = 4;
 
     private static volatile String url;
 
@@ -75,12 +75,16 @@ public final class Database {
                     runScript(c, "database/schema.sql");
                     runScript(c, "database/extra.sql");
                 }
-                if (version < 2) {
-                    runScript(c, "database/budgets.sql");
-                }
                 if (version < 3) {
                     try (Statement s = c.createStatement()) {
                         s.execute("CREATE INDEX IF NOT EXISTS ix_transactions_category ON transactions (accounts_id, categories_id, date)");
+                    }
+                }
+                if (version < 4) {
+                    try (Statement s = c.createStatement()) {
+                        s.execute("DROP TRIGGER IF EXISTS trg_categories_delete_budgets");
+                        s.execute("DROP TRIGGER IF EXISTS trg_categories_type_budgets");
+                        s.execute("DROP TABLE IF EXISTS budgets");
                     }
                 }
                 try (Statement s = c.createStatement()) {
