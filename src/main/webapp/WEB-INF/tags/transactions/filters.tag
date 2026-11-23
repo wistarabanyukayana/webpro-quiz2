@@ -11,7 +11,7 @@
 <c:set var="bad" value="border-error focus:outline-error"/>
 <c:set var="errs" value="${requestScope.filterErrors}"/>
 <form method="get" action="${action}"
-      class="grid gap-4 rounded-xl border border-border bg-surface p-4 sm:grid-cols-2 ${pageScope.withType ? 'lg:grid-cols-6' : 'lg:grid-cols-5'} lg:items-end">
+      class="grid gap-4 rounded-xl border border-border bg-surface p-4 @md:grid-cols-2 @2xl:grid-cols-3 ${pageScope.withType ? '@4xl:grid-cols-6' : '@4xl:grid-cols-5'} @2xl:items-end">
     <c:forEach var="f" items="${['from|From|date', 'to|To|date']}">
         <c:set var="p" value="${f.split('[|]')}"/>
         <div class="grid gap-1.5">

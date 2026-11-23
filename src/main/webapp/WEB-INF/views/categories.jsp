@@ -7,7 +7,7 @@
 <c:set var="editOpen" value="${not empty editing and openDialog == ('edit-' += editing.id)}"/>
 <c:set var="editFailed" value="${editOpen and not empty errors}"/>
 <t:app title="Categories">
-    <main class="flex min-h-0 w-full flex-1 flex-col gap-6 overflow-y-auto p-6 lg:p-8">
+    <main class="@container flex min-h-0 w-full flex-1 flex-col gap-6 overflow-y-auto p-6 lg:p-8">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="grid gap-1">
                 <h1 class="text-2xl font-semibold tracking-tight text-ink">Categories</h1>
@@ -29,7 +29,7 @@
                 </div>
             </c:when>
             <c:otherwise>
-                <div class="grid min-h-0 flex-1 gap-6 sm:grid-cols-2">
+                <div class="grid min-h-0 flex-1 gap-6 @2xl:grid-cols-2">
                     <c:forEach var="group" items="${['Income', 'Expense']}">
                         <c:set var="items" value="${group == 'Income' ? income : expense}"/>
                         <section class="flex min-h-0 flex-col gap-3 overflow-hidden rounded-xl border border-border bg-surface p-5">

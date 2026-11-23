@@ -5,7 +5,7 @@
 <%@ taglib prefix="tx" tagdir="/WEB-INF/tags/transactions" %>
 <%@ taglib prefix="tr" uri="tracker" %>
 <t:app title="Dashboard">
-    <main class="grid w-full min-h-0 flex-1 content-start gap-6 overflow-y-auto p-6 md:grid-rows-[auto_auto_auto_minmax(0,1fr)] lg:p-8">
+    <main class="@container grid w-full min-h-0 flex-1 content-start gap-6 overflow-y-auto p-6 md:grid-rows-[auto_auto_auto_minmax(0,1fr)] lg:p-8">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="grid gap-1">
                 <h1 class="text-2xl font-semibold tracking-tight text-ink">Dashboard</h1>
@@ -66,7 +66,7 @@
                 </section>
             </c:when>
             <c:otherwise>
-                <section class="grid gap-3 rounded-xl border border-border bg-surface p-6">
+                <section class="grid content-start gap-3 rounded-xl border border-border bg-surface p-6">
                     <div class="grid gap-1">
                         <h2 class="text-sm font-medium text-ink">Nothing here yet</h2>
                         <p class="text-sm text-muted">Add an income or expense entry to see your overview grow.</p>

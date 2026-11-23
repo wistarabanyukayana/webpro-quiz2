@@ -34,7 +34,7 @@ Extra, if there is time:
 ## Todo
 
 - [x] Tests (`mvn test`, `scripts/smoke.sh`)
-- [ ] Check the layout on phone, tablet and laptop
+- [x] Check the layout on phone, tablet and laptop
 - [ ] Deploy
 - [ ] Report
 - [ ] README

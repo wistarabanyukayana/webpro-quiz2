@@ -11,7 +11,7 @@
 <c:set var="editFailed" value="${editOpen and not empty errors}"/>
 <c:set var="newOpen" value="${openDialog == 'new'}"/>
 <t:app title="${label}">
-    <main class="flex min-h-0 w-full flex-1 flex-col gap-6 overflow-y-auto p-6 lg:p-8">
+    <main class="@container flex min-h-0 w-full flex-1 flex-col gap-6 overflow-y-auto p-6 lg:p-8">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="grid gap-1">
                 <h1 class="text-2xl font-semibold tracking-tight text-ink">${label}</h1>
@@ -51,8 +51,8 @@
                 </c:when>
                 <c:otherwise>
                     <div class="relative min-h-0 flex-1 overflow-auto">
-                        <table class="w-full min-w-3xl text-left text-sm">
-                            <thead class="text-xs text-muted">
+                        <table class="w-full text-left text-sm @max-2xl:block">
+                            <thead class="text-xs text-muted @max-2xl:hidden">
                             <tr>
                                 <th class="px-4 py-3 font-medium">Date</th>
                                 <th class="px-4 py-3 font-medium">Time</th>
@@ -62,15 +62,15 @@
                                 <th class="px-4 py-3 text-right font-medium"><span class="sr-only">Actions</span></th>
                             </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="@max-2xl:block">
                             <c:forEach var="row" items="${rows}">
-                                <tr class="border-t border-border">
-                                    <td class="px-4 py-3 whitespace-nowrap text-ink">${row.date}</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-muted">${empty row.time ? '-' : row.time}</td>
-                                    <td class="px-4 py-3 whitespace-nowrap text-ink"><c:out value="${empty row.category ? 'Uncategorized' : row.category}"/></td>
-                                    <td class="max-w-xs truncate px-4 py-3 text-muted" title="${fn:escapeXml(row.notes)}"><c:out value="${empty row.notes ? '-' : row.notes}"/></td>
-                                    <td class="px-4 py-3 text-right font-medium whitespace-nowrap ${row.type == 'income' ? 'text-income' : 'text-expense'}">${(row.type == 'income' ? '+ ' : '- ') += tr:money(row.amount)}</td>
-                                    <td class="px-4 py-3">
+                                <tr class="border-t border-border @max-2xl:grid @max-2xl:grid-cols-[auto_auto_minmax(0,1fr)_auto] @max-2xl:items-center @max-2xl:gap-x-2 @max-2xl:gap-y-1 @max-2xl:px-4 @max-2xl:py-3 @max-2xl:first:border-t-0">
+                                    <td class="px-4 py-3 whitespace-nowrap text-ink @max-2xl:row-start-2 @max-2xl:p-0 @max-2xl:text-xs @max-2xl:text-muted">${row.date}</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-muted @max-2xl:row-start-2 @max-2xl:p-0 @max-2xl:text-xs">${empty row.time ? '-' : row.time}</td>
+                                    <td class="px-4 py-3 whitespace-nowrap text-ink @max-2xl:col-span-3 @max-2xl:row-start-1 @max-2xl:truncate @max-2xl:p-0 @max-2xl:font-medium"><c:out value="${empty row.category ? 'Uncategorized' : row.category}"/></td>
+                                    <td class="truncate px-4 py-3 text-muted @2xl:w-full @2xl:max-w-0 @max-2xl:row-start-2 @max-2xl:min-w-0 @max-2xl:p-0 @max-2xl:text-xs" title="${fn:escapeXml(row.notes)}"><c:out value="${empty row.notes ? '-' : row.notes}"/></td>
+                                    <td class="px-4 py-3 text-right font-medium whitespace-nowrap @max-2xl:col-start-4 @max-2xl:row-start-1 @max-2xl:p-0 ${row.type == 'income' ? 'text-income' : 'text-expense'}">${(row.type == 'income' ? '+ ' : '- ') += tr:money(row.amount)}</td>
+                                    <td class="px-4 py-3 @max-2xl:col-start-4 @max-2xl:row-start-2 @max-2xl:p-0">
                                         <div class="flex justify-end gap-1">
                                             <a href="${fn:escapeXml(backUrl.contains('?') ? backUrl.concat('&edit=') : backUrl.concat('?edit='))}${row.id}" aria-label="Edit ${type} entry" class="${small} hover:bg-background hover:text-ink">Edit</a>
                                             <form method="post" action="/transactions/${row.id}" data-confirm="Delete this ${type} entry?">

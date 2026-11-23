@@ -23,7 +23,7 @@ class IntegrityTest {
     }
 
     private static int tableRows(String page) {
-        return page.split("<tr class=\"border-t border-border\">").length - 1;
+        return page.split("<tr class=\"border-t border-border ").length - 1;
     }
 
     @ParameterizedTest(name = "{0}")

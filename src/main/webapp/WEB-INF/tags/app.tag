@@ -9,10 +9,10 @@
 <t:html title="${title}">
 <div class="flex h-dvh flex-col overflow-hidden md:flex-row">
     <aside class="flex w-full shrink-0 flex-col gap-4 border-b border-border bg-surface p-3 md:h-dvh md:w-60 md:justify-between md:gap-6 md:border-r md:border-b-0 md:p-4">
-        <nav class="flex gap-1 overflow-x-auto md:grid md:gap-1" aria-label="Main">
+        <nav class="grid grid-cols-5 gap-1 md:grid-cols-1" aria-label="Main">
             <c:forEach var="link" items="${['/|Dashboard|dashboard', '/income|Income|income', '/expense|Expense|expense', '/categories|Categories|categories', '/recap|Recap|recap']}">
                 <c:set var="parts" value="${link.split('[|]')}"/>
-                <a href="${parts[0]}" class="${item} ${currentPath == parts[0] ? active : idle}"${currentPath == parts[0] ? ' aria-current="page"' : ''}>
+                <a href="${parts[0]}" class="${item} max-md:h-auto max-md:flex-col max-md:gap-1 max-md:px-1 max-md:py-2 max-md:text-xs ${currentPath == parts[0] ? active : idle}"${currentPath == parts[0] ? ' aria-current="page"' : ''}>
                     <ui:nav-icon name="${parts[2]}" cls="size-4 shrink-0"/>
                     ${parts[1]}
                 </a>

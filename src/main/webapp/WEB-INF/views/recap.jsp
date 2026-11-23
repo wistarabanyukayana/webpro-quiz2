@@ -7,14 +7,14 @@
 <c:set var="exportLink" value="inline-flex h-8 items-center justify-center rounded-md border border-border bg-surface px-2.5 text-xs font-medium text-ink transition-colors hover:bg-background focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"/>
 <c:set var="groups" value="${['income|Income by category|text-income|border-t-income|+', 'expense|Expense by category|text-expense|border-t-expense|-']}"/>
 <t:app title="Recap">
-    <main class="flex min-h-0 w-full flex-1 flex-col gap-6 overflow-y-auto p-6 lg:p-8">
+    <main class="@container flex min-h-0 w-full flex-1 flex-col gap-6 overflow-y-auto p-6 lg:p-8">
         <div class="flex flex-wrap items-start justify-between gap-4">
             <div class="grid gap-1">
                 <h1 class="text-2xl font-semibold tracking-tight text-ink">Recap</h1>
                 <p class="text-sm text-muted"><c:out value="${'Income and expense totals for ' += periodLabel += '.'}"/></p>
             </div>
 
-            <form method="get" action="/recap" class="grid gap-3 sm:flex sm:items-end">
+            <form method="get" action="/recap" class="grid gap-3 max-sm:w-full sm:flex sm:items-end">
                 <ui:select-field name="mode" id="report-mode" label="Report">
                     <option value="month"${mode == 'month' ? ' selected' : ''}>Single month</option>
                     <option value="range"${mode == 'range' ? ' selected' : ''}>Month range</option>
@@ -34,7 +34,7 @@
             </form>
         </div>
 
-        <div class="grid gap-3 sm:grid-cols-[repeat(3,minmax(0,1fr))_auto]">
+        <div class="grid gap-3 @xl:grid-cols-3 @4xl:grid-cols-[repeat(3,minmax(0,1fr))_auto]">
             <section class="grid gap-1 rounded-xl border border-l-4 border-border border-l-income bg-surface p-4">
                 <p class="text-xs text-muted">Income</p>
                 <p class="text-lg font-semibold text-income">+${tr:money(income)}</p>
@@ -47,7 +47,7 @@
                 <p class="text-xs text-muted">Net change</p>
                 <p class="text-lg font-semibold ${net lt 0 ? 'text-expense' : 'text-income'}">${net gt 0 ? '+' : ''}${tr:money(net)}</p>
             </section>
-            <section class="flex w-fit flex-wrap items-center gap-2 rounded-xl border border-border bg-surface px-3 py-2">
+            <section class="flex w-fit flex-wrap items-center gap-2 rounded-xl border @xl:col-span-3 @4xl:col-span-1 border-border bg-surface px-3 py-2">
                 <p class="mr-1 text-xs font-medium text-muted">Export</p>
                 <div class="flex flex-wrap gap-1.5">
                     <a href="${fn:escapeXml('/recap/csv?' += exportQuery)}" class="${exportLink}">CSV</a>
@@ -81,7 +81,7 @@
                     </div>
 
                     <div class="min-h-64">
-                        <div class="grid gap-5 sm:h-64 sm:grid-cols-2" aria-label="Category bar charts" data-show-when="chart-mode:bar">
+                        <div class="grid gap-5 @2xl:h-64 @2xl:grid-cols-2" aria-label="Category bar charts" data-show-when="chart-mode:bar">
                             <c:forEach var="group" items="${groups}">
                                 <c:set var="g" value="${group.split('[|]')}"/>
                                 <c:set var="items" value="${g[0] == 'income' ? incomeTotals : expenseTotals}"/>
@@ -111,7 +111,7 @@
                             </c:forEach>
                         </div>
 
-                        <div class="grid gap-5 sm:grid-cols-2" aria-label="Category wheel charts" data-show-when="chart-mode:wheel" hidden>
+                        <div class="grid gap-5 @2xl:grid-cols-2" aria-label="Category wheel charts" data-show-when="chart-mode:wheel" hidden>
                             <c:forEach var="group" items="${groups}">
                                 <c:set var="g" value="${group.split('[|]')}"/>
                                 <c:set var="items" value="${g[0] == 'income' ? incomeTotals : expenseTotals}"/>
@@ -152,7 +152,7 @@
                     </div>
                 </section>
 
-                <div class="grid min-h-64 flex-1 gap-6 sm:grid-cols-2">
+                <div class="grid min-h-64 flex-1 gap-6 @2xl:grid-cols-2">
                     <c:forEach var="group" items="${groups}">
                         <c:set var="g" value="${group.split('[|]')}"/>
                         <c:set var="items" value="${g[0] == 'income' ? incomeTotals : expenseTotals}"/>
